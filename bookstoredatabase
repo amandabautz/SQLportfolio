@@ -1,0 +1,18 @@
+CREATE TABLE Bookstore_Items(id INTEGER PRIMARY KEY, Title TEXT, Author TEXT, Genre TEXT, Price NUMERIC);
+INSERT INTO Bookstore_Items VALUES(1, "Gunmetal Gods", "Akhtar, Zamil", "Fantasy", 15.99);
+INSERT INTO Bookstore_Items VALUES(2, "Night Shift", "King, Stephen", "Horror", 9.99);
+INSERT INTO Bookstore_Items VALUES(3, "Angela's Ashes", "McCourt, Frank", "Autobiography", 12.99);
+INSERT INTO Bookstore_Items VALUES(4, "On Writing", "Hemingway, Ernest", "Non-Fiction", 8.99);
+INSERT INTO Bookstore_Items VALUES(5, "Harry Potter and the Sorcerer's Stone", "Rowling, JK", "Children's Fantasy", 18.99);
+INSERT INTO Bookstore_Items VALUES(6, "Rogue Untouched", "Kwitney, Alisa", "Super Hero Fiction", 10.99);
+INSERT INTO Bookstore_Items VALUES(7, "The Jungle", "Sinclair, Upton", "Classic Fiction", 5.99);
+INSERT INTO Bookstore_Items VALUES(8, "The Complete Works of Edgar Allan Poe", "Poe, Edgar Allan", "Horror", 19.99);
+INSERT INTO Bookstore_Items VALUES(9, "A Game of Thrones", "Martin, George RR", "Fantasy", 11.99);
+INSERT INTO Bookstore_Items VALUES(10, "A Clash of Kings", "Martin, George RR", "Fantasy", 11.99);
+INSERT INTO Bookstore_Items VALUES(11, "A People's History of the United States", "Zinn, Howard", "Non-Fiction", 17.99);
+INSERT INTO Bookstore_Items VALUES(12, "Blackwood Farm", "Rice, Anne", "Horror", 15.99);
+INSERT INTO Bookstore_Items VALUES(13, "The Priory of the Orange Tree", "Shannon, Samantha", "Fantasy", 19.99);
+INSERT INTO Bookstore_Items VALUES(14, "American Gods", "Gaiman. Neil", "Fantasy", 13.99);
+INSERT INTO Bookstore_Items VALUES(15, "The Hobbit", "Tolkien, JRR", "Fantasy", 5.99);
+
+SELECT * FROM Bookstore_Items WHERE Genre = "Fantasy" ORDER BY Price
