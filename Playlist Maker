@@ -1,5 +1,5 @@
 /*Creates a playlist of only Pop songs that shows the song title*/
-/*Uses a subquery to pull information from two different tables*/
+/*Uses a subquery to pull information from two different tables, one song list and one artist list*/
 
 CREATE TABLE artists (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
