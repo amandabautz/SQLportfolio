@@ -1,3 +1,6 @@
+/*Database containing inventory for a small bookstore.*/ 
+/*Contains book titles, authors, genres and prices. Also has a query to sort by price and only show books in the fantasy genre.*/
+
 CREATE TABLE Bookstore_Items(id INTEGER PRIMARY KEY, Title TEXT, Author TEXT, Genre TEXT, Price NUMERIC);
 INSERT INTO Bookstore_Items VALUES(1, "Gunmetal Gods", "Akhtar, Zamil", "Fantasy", 15.99);
 INSERT INTO Bookstore_Items VALUES(2, "Night Shift", "King, Stephen", "Horror", 9.99);
