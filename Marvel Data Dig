@@ -1,11 +1,5 @@
-/* Marvel Heroes and Villains
- Based on the website http://marvel.wikia.com/Main_Page
- with popularity data from http://observationdeck.io9.com/something-i-found-marvel-character-popularity-poll-cb-1568108064 
- and power grid data from http://marvel.wikia.com/Power_Grid#Power
- Collected by: https://www.khanacademy.org/profile/Mentrasto/
- */
-
-/*Diplays a table of Marvel characters and their attributes. Different queries are demonstrated below the table.*/
+/*Diplays a table of Marvel characters and their attributes. Different queries are demonstrated below the table. Data source is listed
+in the extended description.*/
 CREATE TABLE marvels (ID INTEGER PRIMARY KEY,
     name TEXT,
     popularity INTEGER,
@@ -48,10 +42,10 @@ INSERT INTO marvels VALUES(24, "Venom", 78, "Neutral", "Male", 1.90, 118, "EUA",
 INSERT INTO marvels VALUES(25, "Juggernaut", 76, "Neutral", "Male", 2.87, 862, "EUA", 2, 7, 2, 7, 1, 4);
 INSERT INTO marvels VALUES(26, "Professor X", 58, "Good", "Male", 1.83, 86, "EUA", 5, 2, 2, 2, 5, 3);
 
-/*Calculates the average intelligence of Female heros whoe popularity is >= 5*/
+/*Calculates the average intelligence of Female heros whoe popularity is >= 5 using AVG(), GROUP BY, and AND*/
 SELECT name, AVG(intelligence) AS Smarts FROM marvels GROUP BY name HAVING  popularity >= 5 AND gender = "Female";
 
-/*Displays a new column with a phrase that changes based in the character's alignment.*/
+/*Displays a new column with a phrase that changes based in the character's alignment using CASE.*/
 SELECT name, alignment,
 CASE 
  WHEN alignment = "Good" THEN "That's a good hero."
@@ -60,8 +54,8 @@ CASE
  END AS "What_Are_They?"
 FROM marvels;
 
-/*Counts and shows how many good, bad, and neutral characters there are.*/
+/*Counts and shows how many good, bad, and neutral characters there are using COUNT().*/
 SELECT alignment, COUNT(alignment) AS total FROM marvels GROUP BY alignment;
 
-/*Shows the cities that bad characters come from and how many bad characters are from those cities.*/
+/*Shows the cities that bad characters come from and how many bad characters are from those cities using GROUP BY and HAVING.*/
 SELECT hometown, COUNT(alignment) AS HowManyBad FROM marvels GROUP BY hometown HAVING alignment = "Bad"
