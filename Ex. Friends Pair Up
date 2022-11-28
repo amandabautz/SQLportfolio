@@ -1,0 +1,50 @@
+/*Includes 3 differenet tables, one with information about different people, one about their hobbies, and one pairing them up.
+Two queries are included. The first shows what each persons' hobbies are and the second shows who they are paired with based on 
+friend IDs.*/
+
+CREATE TABLE persons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fullname TEXT,
+    age INTEGER);
+    
+INSERT INTO persons (fullname, age) VALUES ("Gomez Addams", "37");
+INSERT INTO persons (fullname, age) VALUES ("Wednesday Addams", "16");
+INSERT INTO persons (fullname, age) VALUES ("Thing Addams", "108");
+INSERT INTO persons (fullname, age) VALUES ("Morticia Addams", "37");
+INSERT INTO persons (fullname, age) VALUES ("Pugsley Addams", "11");
+
+CREATE table hobbies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    name TEXT);
+    
+INSERT INTO hobbies (person_id, name) VALUES (1, "drawing");
+INSERT INTO hobbies (person_id, name) VALUES (1, "fencing");
+INSERT INTO hobbies (person_id, name) VALUES (2, "writing");
+INSERT INTO hobbies (person_id, name) VALUES (2, "fencing");
+INSERT INTO hobbies (person_id, name) VALUES (3, "skating");
+INSERT INTO hobbies (person_id, name) VALUES (3, "rowing");
+INSERT INTO hobbies (person_id, name) VALUES (3, "drawing");
+INSERT INTO hobbies (person_id, name) VALUES (4, "dancing");
+INSERT INTO hobbies (person_id, name) VALUES (4, "gardening");
+INSERT INTO hobbies (person_id, name) VALUES (4, "make-up");
+
+CREATE table friends (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person1_id INTEGER,
+    person2_id INTEGER);
+
+INSERT INTO friends (person1_id, person2_id)
+    VALUES (1, 4);
+INSERT INTO friends (person1_id, person2_id)
+    VALUES (2, 3);
+    
+SELECT persons.fullname, hobbies.name FROM persons
+JOIN hobbies
+ON persons.id = hobbies.person_id;
+
+SELECT a.fullname, b.fullname FROM friends
+JOIN persons AS a
+ON friends.person1_id = a.id
+JOIN persons AS b
+ON friends.person2_id = b.id
