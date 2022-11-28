@@ -1,0 +1,30 @@
+/*In this project: create a database of 10 movies and shows from 2022. Initially, include names, genres, ratings, and if it's a movie 
+or a TV show. Updated the genre of item 7 after the table was created and removed item 10. Lastly, added a column called "miniseries",
+added a default value, and updated all entries to show whether or not it was a miniseries.*/
+
+CREATE TABLE movies_and_shows2022(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, movie_or_show TEXT, genre TEXT, imdb_rating NUMERIC, my_rating NUMERIC); 
+
+INSERT INTO movies_and_shows2022 VALUES (1, "Everything Everywhere All At Once", "Movie", "Sci-Fi", 8.1, 10);
+INSERT INTO movies_and_shows2022 VALUES (2, "Wednesday", "Show", "Horror/Mystery", 8.5, 9.5);
+INSERT INTO movies_and_shows2022 VALUES (3, "A League of Their Own", "Show", "Dramedy", 7.5, 8.5);
+INSERT INTO movies_and_shows2022 VALUES (4, "Doctor Strange in the Multiverse of Madness", "Movie", "Super Hero", 6.9, 7.5);
+INSERT INTO movies_and_shows2022 VALUES (5, "House of the Dragon", "Show", "Fantasy", 8.5, 9.5);
+INSERT INTO movies_and_shows2022 VALUES (6, "Werewolf by Night", "Show", "Horror", 7.2, 8.1);
+INSERT INTO movies_and_shows2022 VALUES (7, "She Hulk: Attorney at Law", "Show", "Comedy", 5.2, 9.8);
+INSERT INTO movies_and_shows2022 VALUES (8, "Guillermo del Toro's Cabinet of Curiosities", "Show", "Horror Anthology", 7.1, 8.0);
+INSERT INTO movies_and_shows2022 VALUES (9, "The Boulet Brothers' Dragula: Titans", "Show", "Reality TV", 7.4, 8.2);
+INSERT INTO movies_and_shows2022 VALUES (10, "Dahmer - Monster: The Jeffrey Dahmer Story", "Show", "True Crime", 8.0, 7.5);
+
+SELECT * FROM movies_and_shows2022;
+
+UPDATE movies_and_shows2022 SET genre = "Super Hero Comedy" WHERE id = 7;
+
+DELETE FROM movies_and_shows2022 WHERE id = 10; 
+
+ALTER TABLE movies_and_shows2022 ADD miniseries TEXT default "Unknown";
+
+UPDATE movies_and_shows2022 SET miniseries = "No" WHERE id = 2 OR id = 3 OR id = 5 OR id = 9;
+UPDATE movies_and_shows2022 SET miniseries = "Yes" WHERE id = 6 OR id = 8;
+UPDATE movies_and_shows2022 SET miniseries = "It's a movie." WHERE id = 1 OR id = 4;
+
+SELECT * FROM movies_and_shows2022;
