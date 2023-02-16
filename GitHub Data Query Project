@@ -1,0 +1,60 @@
+--Using PostgreSQL, Query a CSV file containing GitHub data
+
+--Return a list of all topics without any duplicate values
+SELECT DISTINCT topic FROM github;
+
+--Return a list of repo names and star counts from largest to smallest
+SELECT repo_name, star_count FROM github
+ORDER BY star_count DESC;
+
+--List all topics in alphabetical order without any duplicate values
+SELECT DISTINCT topic FROM github
+ORDER BY topic;
+
+--Query all repo names that have a star count above 2000
+SELECT repo_name FROM github
+WHERE star_count > 2000;
+
+--Query all repo names that have a star count above 3000 and have a topic called #d
+SELECT repo_name FROM github
+WHERE star_count > 3000 AND topic = '3d';
+
+--Query all repo names that are in the aws, azure, or chrome topics and that have a star count below 1000
+SELECT repo_name FROM github
+WHERE star_count < 1000 AND (topic = 'aws' OR topic = 'azure' OR
+							topic = 'chrome');
+
+--Return the user name, repo name, and repo link where the link contains ‘ext’
+SELECT user_name, repo_name, repo_link FROM github
+WHERE repo_link ILIKE '%ext%';
+
+--Returns all chrome topics that have a star count above 5000
+SELECT * FROM github
+WHERE topic = 'chrome' AND star_count > 5000;
+
+--Return all the usernames and respective repo names where the star count is above 1000 and below 15000
+SELECT user_name, repo_name FROM github
+WHERE (star_count > 1000 AND star_count < 15000);
+
+--Return an alphabetical list of usernames that have repos with star counts above 15000 (no duplicates)
+SELECT DISTINCT user_name FROM github
+WHERE star_count > 15000
+ORDER BY user_name;
+
+--Returns a list of usernames that begin with ‘Add’ or end with ‘on’ (no Duplicates)
+SELECT DISTINCT user_name FROM github
+WHERE user_name LIKE 'Add%' OR user_name LIKE '%on';
+
+--Return an alphabetical list of  topics that have at least one repo with a star count above 100,000 (no duplicates)
+SELECT DISTINCT topic FROM github
+WHERE star_count > 100000
+ORDER BY topic;
+
+--Return a list of topics that contain null star counts 
+SELECT topic, star_count FROM github
+WHERE star_count IS NULL;
+
+--Returns a list of topics, usernames, and star_counts where the start count is at least 100,000 but no more than 200,000 
+--and whose topic starts with ‘a’
+SELECT topic, user_name, star_count FROM github
+WHERE (star_count >= 100000 AND star_count <= 200000) AND topic ILIKE 'A%';
