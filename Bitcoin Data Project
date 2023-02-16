@@ -1,0 +1,58 @@
+--PostgreSQL: Create a table to hold data from a CSV file containing information about bitcoin transactions and query the data.
+
+--Create the table
+CREATE TABLE bitcoin_data
+    (
+    trans_date DATE,
+        priceusd NUMERIC,
+        code_size INT, 
+        salessentbyaddress INT,
+        transactions INT,
+        mining_profitability NUMERIC,
+        sentinusd NUMERIC,
+        transactionfees NUMERIC,
+        median_transaction_fee NUMERIC,
+        confirmationtime NUMERIC,
+        marketcap NUMERIC,
+        transactionvalue INT,
+        mediantransactionvalue NUMERIC,
+        tweets INT,
+        google_trends NUMERIC,
+        fee_to_reward NUMERIC,
+        activeaddresses INT,
+        top100cap NUMERIC
+    );
+
+---Copy data from the CSV file in to the new table
+COPY bitcoin_data
+FROM 'file path'
+WITH (FORMAT CSV,HEADER);
+
+---Return the transaction date and the code size divided by the transactions with the column name difficulty.
+SELECT trans_date, code_size::NUMERIC/transactions AS difficulty
+FROM bitcoin_data;
+
+--Return the transaction date and the product of median transaction fee and transactions with the column name daily_cost
+SELECT trans_date, median_transaction_fee*transactions AS daily_cost
+FROM bitcoin_data;
+
+--Return the transaction date and the amount sent in USD divided by the number of transactions with the 
+--column name average_transaction and the median transaction value
+SELECT trans_date, sentinusd::NUMERIC/transactions AS average_transaction, mediantransactionvalue
+FROM bitcoin_data;
+
+---Returns the average price in USD with the column name avg_price.
+SELECT AVG(priceusd) AS avg_price
+FROM bitcoin_data;
+
+---Return the total number of transactions with the new column name total_transactions.
+SELECT SUM(transactions) AS total_transactions
+FROM bitcoin_data;
+
+---Returns the highest value from the market cap column and call it max_cap
+SELECT MAX(marketcap) AS max_cap
+FROM bitcoin_data;
+
+---Return the mean number of tweets and call the new column avg_daily_tweets
+SELECT AVG(tweets) AS avg_daily_tweets
+FROM bitcoin_data;
