@@ -1,0 +1,122 @@
+--Create a table, import in data from a CSV file containing Netflix data. Clean data.
+
+--Table Creation
+CREATE TABLE netflix(
+    show_id VARCHAR(10),
+        type VARCHAR(10), 
+        title TEXT,
+        director TEXT,
+        country VARCHAR(50),
+        date_added DATE,
+        released INT,
+        rating VARCHAR(10),
+        duration VARCHAR(20),
+        listed_in TEXT
+    );
+
+--Import Data
+COPY netflix
+FROM 'file path'
+WITH (FORMAT CSV,HEADER);
+
+--Select Statement for data Verification
+SELECT * FROM netflix;
+
+--Create Backup
+CREATE TABLE netflix_backup AS SELECT * FROM netflix;
+
+--Create Duplicate Column
+ALTER TABLE netflix ADD COLUMN title_copy TEXT;
+UPDATE netflix
+SET title_copy = title;
+
+/*Explore the director column to see if any NULL values exist*/
+SELECT director, COUNT(director) FROM netflix
+GROUP BY director
+ORDER BY director;
+
+/*The value of Not Given is used in the director column instead of NULL 2588 times. I'm updating
+that the value to NULL since no director name was actually provided.*/
+UPDATE netflix
+SET director = NULL
+WHERE director = 'Not Given';
+
+/*Check to see that 2588 NULL values exist in the director column to verify that
+all 'Not Given' values have been replaced*/
+SELECT director FROM netflix WHERE director IS NULL;
+
+/*Exploring the country column to see if any NULL values exist*/
+SELECT country, COUNT(country) FROM netflix
+GROUP BY country
+ORDER BY country;
+
+/*The value of Not Given is used in the country column instead of NULL 287 times. I'm updating
+that the value to NULL since no country was actually provided.*/
+UPDATE netflix
+SET country = NULL
+WHERE country = 'Not Given';
+
+/*Checking to see that 287 NULL values exist in the country column to verify that
+all 'Not Given' values have been replaced*/
+SELECT country FROM netflix WHERE country IS NULL;
+
+/*Explore values in the rating column*/
+SELECT rating, COUNT(rating) FROM netflix
+GROUP BY rating
+ORDER BY rating;
+
+/*The value of UR (un-rated) is used 3 times and NR (not rated) is used 79 times. I'm updating
+the UR rows to NR for consistency since they are typically used interchangeably.*/
+UPDATE netflix
+SET rating = REPLACE(rating, 'UR', 'NR');
+
+/*Verifying that all UR vaues have been updated. None exist and now 82 NR values exist*/
+SELECT rating, COUNT(rating) FROM netflix
+GROUP BY rating
+ORDER BY rating;
+
+/*Explore values in the title column*/
+SELECT title, COUNT(title) FROM netflix
+GROUP BY title
+ORDER BY title;
+
+/*Nauruto Shippûden titles are not consistant. Some have Shippûden and others are
+ Shippuden. For consistency, I am updating the titles to Shippûden to include the 
+ circumflex accent mark. */
+UPDATE netflix
+SET title = REPLACE(title, 'Shippuden', 'Shippûden');
+
+/*Verify that all Naruto Shippûden titles have been updated.*/
+SELECT title FROM netflix WHERE title ILIKE 'Naruto%';
+
+/*Code series below: Split the date_added column and adding a year_added column since only the
+release year is provided in the data. This makes it possible to run queries and aggregate functions
+comparing the release year and the year that the title was added to Netflix.*/
+
+/*Beginning a new transaction*/
+START TRANSACTION;
+
+/*Create the new column using data type TEXT so that it will be compatible with data in the date_added
+column*/
+ALTER TABLE netflix ADD COLUMN year_added TEXT;
+
+/*Verifying the date format for date_added to see where to split the column*/
+SELECT year_added FROM netflix;
+
+/*Split out the year from the date_added column and changing the data type to TEXT since it 
+can't be changed from DATE to INTEGER directly*/
+UPDATE netflix
+SET year_added=SPLIT_PART(date_added::TEXT, '-',1)
+RETURNING year_added, date_added;
+
+/*Change the data type for year_added from text to integer so that
+it will be compatable with release_year*/
+ALTER TABLE netflix ALTER COLUMN year_added SET DATA TYPE INT
+USING year_added::INT;
+
+/*Verify that the new column was added with only the year and that it is now 
+data type INTEGER*/
+SELECT year_added FROM netflix;
+
+/*Everything has been verifyied. Transaction is commited.*/
+COMMIT;
