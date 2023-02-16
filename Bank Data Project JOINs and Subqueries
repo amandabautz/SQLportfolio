@@ -1,0 +1,72 @@
+/*Using several existing tables containing bank branch and customer data (including loan and account information),
+  query data using subqueries and joins.*/
+  
+--Find the cust_ID and customer name of each customer at the bank who only has at least one loan at the bank but no account.
+SELECT customer.cust_ID, customer.customer_name FROM customer 
+WHERE cust_ID NOT IN (
+  SELECT cust_ID FROM depositor)
+  AND cust_ID IN 
+  (SELECT cust_ID FROM borrower);
+  
+/*Find the cust_ID and customer name of each customer who lives on the same street and in the same 
+  city as customer ‘12345’.*/
+SELECT cust_ID, customer_name FROM customer
+WHERE (customer_street, customer_city) = (
+  SELECT customer_street, customer_city FROM customer
+  WHERE cust_ID = 12345) OR cust_ID = 12345;
+  
+--Find the name of each branch that has at least one customer who has an account in the bank and who lives in “Harrison”.
+WITH cust_acc AS (
+  SELECT cust_ID FROM depositor), in_harrison AS (
+  SELECT cust_ID FROM customer
+  WHERE customer_city = 'Harrison')
+  SELECT branch_name FROM branch
+  WHERE branch_name IN (
+  SELECT branch_name FROM account
+  WHERE account_number IN (
+    SELECT account_number FROM depositor
+    WHERE cust_ID IN (
+      SELECT * FROM in_harrison
+      INTERSECT
+      SELECT * FROM cust_acc)));
+      
+--Find each customer who has an account at every branch located in “Brooklyn”. 
+SELECT customer.customer_name FROM customer
+WHERE NOT EXISTS 
+  (SELECT * FROM branch 
+  WHERE branch.branch_city = 'Brooklyn' 
+  AND branch.branch_name NOT IN 
+    (SELECT account.branch_name FROM account 
+    JOIN depositor 
+    ON account.account_number = depositor.account_number 
+    WHERE depositor.cust_ID = customer.cust_ID));
+    
+/*Find the account number of all customers whose deposit account is in the city where they live. 
+  Return the customer’s id, branch city, and customer city*/
+SELECT d.account_number, d.cust_ID, b.branch_city, c.customer_city
+FROM depositor d
+JOIN customer c ON d.cust_ID = c.cust_ID 
+JOIN account a ON d.account_number = a.account_number 
+JOIN branch b ON a.branch_name = b.branch_name 
+WHERE b.branch_city = (
+  SELECT c.customer_city FROM customer c
+  WHERE c.cust_ID = d.cust_ID);
+  
+--Return all customers that have a loan at Yonkers Branch. Return the customer name and branch name for verification. 
+SELECT c.customer_name, br.branch_name FROM customer c
+JOIN borrower b ON c.cust_ID = b.cust_ID
+JOIN loan l ON b.loan_number = l.loan_number
+JOIN branch br ON l.branch_name = br.branch_name
+WHERE l.loan_number IN (
+SELECT loan_number FROM loan
+WHERE branch_name = 'Yonkers');
+
+--Return the name and loan number of all customers with loan balances higher than $5,000.00.
+SELECT c.customer_name, l.loan_number FROM loan l
+JOIN borrower b ON l.loan_number = b.loan_number
+JOIN customer c ON b.cust_ID = c.cust_ID
+WHERE b.cust_ID IN (
+    SELECT cust_ID FROM borrower
+    WHERE loan_number IN (
+        SELECT loan_number FROM loan
+        WHERE amount::numeric > 5000));
