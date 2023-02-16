@@ -1,0 +1,72 @@
+--PostgreSQL: Create a table to track customer spending, import data from a CSV file, query the data.
+
+--Create the table
+  CREATE TABLE customer_spending
+      (
+      trans_date DATE,
+          year INT,
+          month VARCHAR(25), 
+          customer_age INT,
+          customer_gender VARCHAR(10),
+          country VARCHAR(50),
+          state VARCHAR(50),
+          product_category VARCHAR(50),
+          sub_category VARCHAR(50),
+          quantity INT,
+          unit_cost NUMERIC,
+          unit_price NUMERIC,
+          cost NUMERIC,
+          revenue NUMERIC
+      );
+
+--Copy in the information from the CSV file
+  COPY customer_spending
+  FROM 'file path'
+  WITH (FORMAT CSV,HEADER);
+
+
+/*Return the top selling (revenue) categories for the year 2016 
+  including the category name and total revenue. Organize data alphabetically by category name.*/
+  SELECT product_category, SUM(revenue) FROM customer_spending
+  WHERE year = 2016
+  GROUP BY product_category
+  ORDER BY product_category;
+
+/*Return a list of sub categories and their average unit price, average unit cost, and the difference between these 
+  values called margin for the year 2015. Order the results alphabetically by sub category.*/ 
+  SELECT sub_category, avg(unit_price) AS avg_price, avg(unit_cost) AS avg_cost, 
+  avg(unit_price)-avg(unit_cost) AS margin
+  FROM customer_spending
+  WHERE year = 2015
+  GROUP BY sub_category
+  ORDER BY sub_category;
+
+--Returns the total number of female buyers who purchased clothes.
+  SELECT product_category, COUNT(customer_gender)
+  FROM customer_spending 
+  WHERE product_category = 'Clothing'  AND customer_gender = 'F'
+  GROUP BY product_category;
+ 
+/*Return the average quantity and average cost of products purchased by each age and by sub category. 
+  Display the columns with age, sub category, average quantity, and average cost. 
+  Sort by age oldest to youngest and then by sub category alphabetically.*/
+  SELECT customer_age, sub_category, AVG(quantity) AS avg_quantity, AVG(cost) AS avg_cost
+  FROM customer_spending
+  GROUP BY customer_age, sub_category
+  ORDER BY customer_age DESC, sub_category;
+
+--Return a list of countries that had more than 30 transactions to customers between the ages of 18-25.
+  SELECT country, COUNT(country) FROM customer_spending
+  WHERE customer_age >= 18 AND customer_age <=25
+  GROUP BY country
+  HAVING COUNT(country) > 30
+  ORDER BY country;
+    
+/*Return a list of sub categories, the average quantity, and average cost both rounded to 2 decimal places. 
+  Include sub categories that have at least 10 records in the data set. Sort the data by sub category.*/
+  SELECT sub_category, COUNT(sub_category), ROUND(AVG(quantity), 2) AS avg_quantity,
+  ROUND(AVG(cost), 2) AS avg_cost
+  FROM customer_spending
+  GROUP BY sub_category
+  HAVING COUNT(sub_category) >= 10
+  ORDER BY sub_category ASC;
